@@ -48,17 +48,125 @@
   });
 
   /* ---------------------------------------------------------------------
-     2. PRELOADER
+     2. VIDEO ELEMENTS + AUTOPLAY SAFETY (set up early, before preload gate)
+     --------------------------------------------------------------------- */
+  const heroVideo = document.getElementById("heroVideo");
+  const scrubVideo = document.getElementById("scrubVideo");
+
+  function ensureAutoplay(video) {
+    if (!video) return;
+    video.muted = true;
+    video.defaultMuted = true;
+    const tryPlay = () => {
+      const p = video.play();
+      if (p && typeof p.catch === "function") p.catch(() => armRetry());
+    };
+    function armRetry() {
+      const retry = () => { video.play().catch(() => {}); cleanup(); };
+      const cleanup = () => {
+        window.removeEventListener("touchstart", retry);
+        window.removeEventListener("pointerdown", retry);
+        window.removeEventListener("scroll", retry);
+      };
+      window.addEventListener("touchstart", retry, { once: true, passive: true });
+      window.addEventListener("pointerdown", retry, { once: true });
+      window.addEventListener("scroll", retry, { once: true, passive: true });
+    }
+    tryPlay();
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden && video.paused) tryPlay();
+    });
+  }
+  // Start the hero loop buffering/playing immediately — by the time the
+  // preloader clears, it should already be rolling smoothly.
+  ensureAutoplay(heroVideo);
+
+  // The scrub video must never autoplay-loop (scroll controls it), but its
+  // very first frame needs to be painted, or it shows a blank/black box
+  // until the user starts scrolling. A play-then-immediately-pause nudge
+  // forces the browser to render frame 0.
+  function primeFirstFrame(video) {
+    if (!video) return;
+    const nudge = () => {
+      const p = video.play();
+      if (p && typeof p.catch === "function") {
+        p.then(() => video.pause()).catch(() => { try { video.currentTime = 0.001; } catch (e) {} });
+      } else {
+        video.pause();
+      }
+    };
+    if (video.readyState >= 2) nudge();
+    else video.addEventListener("loadeddata", nudge, { once: true });
+  }
+  primeFirstFrame(scrubVideo);
+
+  /* ---------------------------------------------------------------------
+     3. PRELOADER — waits for real assets (images, both videos, webfonts)
+        so the page never reveals ahead of what it needs to show.
      --------------------------------------------------------------------- */
   const preloader = document.getElementById("preloader");
   const preloaderBar = document.getElementById("preloaderBar");
+  const preloaderPct = document.getElementById("preloaderPct");
 
-  window.addEventListener("load", () => {
-    gsap.to(preloaderBar, { width: "100%", duration: 0.6, ease: "power2.out", delay: 0.15 });
+  function updateProgress(loaded, total) {
+    const pct = total ? Math.round((loaded / total) * 100) : 100;
+    if (preloaderBar) preloaderBar.style.width = pct + "%";
+    if (preloaderPct) preloaderPct.textContent = pct + "%";
+  }
+
+  function loadAllAssets() {
+    let loaded = 0;
+    const trackables = [];
+
+    // Every <img> already declared in the document
+    Array.from(document.images).forEach((img) => trackables.push(img));
+
+    const tasks = trackables.map((img) => {
+      if (img.complete && img.naturalWidth > 0) return Promise.resolve();
+      return new Promise((res) => {
+        img.addEventListener("load", res, { once: true });
+        img.addEventListener("error", res, { once: true });
+      });
+    });
+
+    // Both videos — wait until enough is buffered to play through without stalling
+    [heroVideo, scrubVideo].forEach((v) => {
+      if (!v) return;
+      if (v.readyState >= 3) { tasks.push(Promise.resolve()); return; }
+      tasks.push(new Promise((res) => {
+        let done = false;
+        const finish = () => { if (!done) { done = true; res(); } };
+        v.addEventListener("canplaythrough", finish, { once: true });
+        v.addEventListener("error", finish, { once: true });
+        // Some mobile browsers under-report buffering events for short clips —
+        // loadeddata plus a short grace period is a reliable fallback.
+        v.addEventListener("loadeddata", () => setTimeout(finish, 500), { once: true });
+      }));
+    });
+
+    // Webfonts (avoids a flash of fallback type right after reveal)
+    if (document.fonts && document.fonts.ready) {
+      tasks.push(document.fonts.ready.catch(() => {}));
+    }
+
+    const total = tasks.length;
+    updateProgress(0, total);
+
+    return Promise.all(
+      tasks.map((p) =>
+        p.then(
+          () => { loaded++; updateProgress(loaded, total); },
+          () => { loaded++; updateProgress(loaded, total); }
+        )
+      )
+    );
+  }
+
+  function revealSite() {
+    if (document.body.classList.contains("is-ready")) return;
     gsap.to(preloader, {
       opacity: 0,
       duration: 0.7,
-      delay: 0.55,
       ease: "power2.inOut",
       onComplete: () => {
         preloader.style.display = "none";
@@ -67,17 +175,20 @@
         ScrollTrigger.refresh();
       },
     });
+  }
+
+  // Race real loading against a generous ceiling — long enough that a slow
+  // connection still gets to finish loading for real (which is the point),
+  // short enough that a single stuck asset can't hang the page forever.
+  const loadPromise = loadAllAssets();
+  const timeoutPromise = new Promise((res) => setTimeout(res, 45000));
+  Promise.race([loadPromise, timeoutPromise]).then(() => {
+    updateProgress(1, 1);
+    setTimeout(revealSite, 220);
   });
 
-  // Safety net in case 'load' stalls (slow video fetch etc.)
-  setTimeout(() => {
-    if (preloader && preloader.style.display !== "none") {
-      window.dispatchEvent(new Event("load"));
-    }
-  }, 3500);
-
   /* ---------------------------------------------------------------------
-     3. CUSTOM CURSOR (desktop only)
+     4. CUSTOM CURSOR (desktop only)
      --------------------------------------------------------------------- */
   const cursorDot = document.getElementById("cursorDot");
   if (!isTouch && cursorDot) {
@@ -98,7 +209,7 @@
   }
 
   /* ---------------------------------------------------------------------
-     4. NAV — solid on scroll + mobile menu
+     5. NAV — solid on scroll + mobile menu
      --------------------------------------------------------------------- */
   const nav = document.getElementById("siteNav");
   ScrollTrigger.create({
@@ -108,37 +219,43 @@
   });
 
   const burgerBtn = document.getElementById("burgerBtn");
+  const mobileCloseBtn = document.getElementById("mobileCloseBtn");
   const mobileMenu = document.getElementById("mobileMenu");
   function closeMobileMenu() {
     document.body.classList.remove("nav-open");
+    if (burgerBtn) burgerBtn.setAttribute("aria-expanded", "false");
   }
-  if (burgerBtn) {
-    burgerBtn.addEventListener("click", () => {
-      document.body.classList.toggle("nav-open");
-    });
+  function toggleMobileMenu() {
+    const open = document.body.classList.toggle("nav-open");
+    if (burgerBtn) burgerBtn.setAttribute("aria-expanded", String(open));
   }
+  if (burgerBtn) burgerBtn.addEventListener("click", toggleMobileMenu);
+  if (mobileCloseBtn) mobileCloseBtn.addEventListener("click", closeMobileMenu);
   mobileMenu?.querySelectorAll("a").forEach((a) => a.addEventListener("click", closeMobileMenu));
+  window.addEventListener("keydown", (e) => { if (e.key === "Escape") closeMobileMenu(); });
 
   /* ---------------------------------------------------------------------
-     5. HERO INTRO (runs once preloader clears)
+     6. HERO INTRO (runs once preloader clears)
      --------------------------------------------------------------------- */
   function runHeroIntro() {
     const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-    tl.set([".hero__kicker", ".hero__sub", ".hero__ctas"], { opacity: 0, y: 18 })
+    tl.set([".hero__mark", ".hero__kicker", ".hero__sub", ".hero__ctas"], { opacity: 0, y: 18 })
       .set("[data-hero-word]", { yPercent: 120 })
-      .to("[data-hero-word]", { yPercent: 0, duration: 1.1, stagger: 0.12 }, 0.05)
-      .to(".hero__kicker", { opacity: 1, y: 0, duration: 0.8 }, 0.15)
-      .to(".hero__sub", { opacity: 1, y: 0, duration: 0.8 }, 0.55)
-      .to(".hero__ctas", { opacity: 1, y: 0, duration: 0.8 }, 0.68);
+      .to(".hero__mark", { opacity: 0.92, y: 0, duration: 0.8 }, 0)
+      .to("[data-hero-word]", { yPercent: 0, duration: 1.1, stagger: 0.12 }, 0.1)
+      .to(".hero__kicker", { opacity: 1, y: 0, duration: 0.8 }, 0.2)
+      .to(".hero__sub", { opacity: 1, y: 0, duration: 0.8 }, 0.58)
+      .to(".hero__ctas", { opacity: 1, y: 0, duration: 0.8 }, 0.7);
   }
   if (reduceMotion) {
     // ensure content is visible immediately
     gsap.set("[data-hero-word]", { yPercent: 0 });
+    gsap.set(".hero__mark", { opacity: 0.92, y: 0 });
     gsap.set([".hero__kicker", ".hero__sub", ".hero__ctas"], { opacity: 1, y: 0 });
   }
 
   /* ---------------------------------------------------------------------
-     6. GENERIC SCROLL REVEALS  [data-reveal]
+     7. GENERIC SCROLL REVEALS  [data-reveal]
      --------------------------------------------------------------------- */
   gsap.utils.toArray("[data-reveal]").forEach((el) => {
     gsap.fromTo(
@@ -152,21 +269,39 @@
   });
 
   /* ---------------------------------------------------------------------
-     7. MANIFESTO — line-by-line mask reveal
+     8. MANIFESTO — responsive word-by-word reveal
+        (splits at runtime so it adapts to any line-wrap width, instead of
+        relying on hand-authored line breaks that only fit one viewport)
      --------------------------------------------------------------------- */
-  document.querySelectorAll(".manifesto__text .h2 .mask-line > span").forEach((span, i) => {
-    gsap.fromTo(
-      span,
-      { yPercent: 115 },
-      {
-        yPercent: 0, duration: 0.9, ease: "power3.out", delay: i * 0.045,
-        scrollTrigger: { trigger: span, start: "top 92%", once: true },
-      }
-    );
+  function splitIntoWords(el) {
+    const words = el.textContent.trim().split(/\s+/);
+    el.innerHTML = "";
+    words.forEach((word, i) => {
+      const outer = document.createElement("span");
+      outer.className = "rw";
+      const inner = document.createElement("span");
+      inner.textContent = word;
+      outer.appendChild(inner);
+      el.appendChild(outer);
+      if (i < words.length - 1) el.appendChild(document.createTextNode(" "));
+    });
+    return Array.from(el.querySelectorAll(".rw > span"));
+  }
+
+  document.querySelectorAll("[data-split-words]").forEach((el) => {
+    const words = splitIntoWords(el);
+    if (reduceMotion) return; // leave text in its final, readable state
+    gsap.set(words, { yPercent: 115 });
+    ScrollTrigger.create({
+      trigger: el,
+      start: "top 88%",
+      once: true,
+      onEnter: () => gsap.to(words, { yPercent: 0, duration: 0.85, ease: "power3.out", stagger: 0.014 }),
+    });
   });
 
   /* ---------------------------------------------------------------------
-     8. ILLUSION GALLERY — curtain wipe reveal (signature moment)
+     9. ILLUSION GALLERY — curtain wipe reveal (signature moment)
      --------------------------------------------------------------------- */
   gsap.utils.toArray("[data-illusion]").forEach((card, i) => {
     const curtain = card.querySelector(".illusion-card__curtain");
@@ -198,7 +333,7 @@
   });
 
   /* ---------------------------------------------------------------------
-     9. COOKIES — slow Ken Burns on scroll
+     10. COOKIES — slow Ken Burns on scroll
      --------------------------------------------------------------------- */
   const cookiesMain = document.querySelector(".cookies__main img");
   if (cookiesMain) {
@@ -222,9 +357,8 @@
   }
 
   /* ---------------------------------------------------------------------
-     10. VIENNOISERIE — pinned scroll-scrubbed video + captions
+     11. VIENNOISERIE — pinned scroll-scrubbed video + captions
      --------------------------------------------------------------------- */
-  const scrubVideo = document.getElementById("scrubVideo");
   const vienSection = document.querySelector(".viennoiserie");
   const caps = gsap.utils.toArray(".viennoiserie__cap");
   const dots = gsap.utils.toArray(".viennoiserie__progress b");
@@ -251,7 +385,7 @@
         trigger: vienSection,
         start: "top top",
         end: "bottom bottom",
-        scrub: 0.4,
+        scrub: 0.15, // near-direct sync — the video now has a keyframe every 2 frames, so seeking is cheap
         onUpdate: (self) => {
           const dur = scrubVideo.duration || 0;
           if (dur) {
@@ -268,7 +402,7 @@
   }
 
   /* ---------------------------------------------------------------------
-     11. PATISSERIE — sticky crossfade tied to text scroll
+     12. PATISSERIE — sticky crossfade tied to text scroll
      --------------------------------------------------------------------- */
   const patImgs = gsap.utils.toArray(".pat__visual img");
   document.querySelectorAll("[data-pat-trigger]").forEach((item) => {
@@ -286,7 +420,7 @@
   });
 
   /* ---------------------------------------------------------------------
-     12. ATELIER — parallax background
+     13. ATELIER — parallax background
      --------------------------------------------------------------------- */
   const atelierImg = document.querySelector("#atelierBg img");
   if (atelierImg) {
@@ -298,7 +432,7 @@
   }
 
   /* ---------------------------------------------------------------------
-     13. MENU — iframe loading state
+     14. MENU — iframe loading state
      --------------------------------------------------------------------- */
   const menuIframe = document.getElementById("menuIframe");
   const menuLoading = document.getElementById("menuLoading");
@@ -310,7 +444,7 @@
   }
 
   /* ---------------------------------------------------------------------
-     14. HERO subtle parallax on media
+     15. HERO subtle parallax on media
      --------------------------------------------------------------------- */
   const heroMedia = document.getElementById("heroMedia");
   if (heroMedia) {
@@ -322,7 +456,7 @@
   }
 
   /* ---------------------------------------------------------------------
-     15. Story cards — staggered reveal
+     16. Story cards — staggered reveal
      --------------------------------------------------------------------- */
   gsap.utils.toArray(".story-card").forEach((card, i) => {
     gsap.fromTo(
@@ -336,7 +470,7 @@
   });
 
   /* ---------------------------------------------------------------------
-     16. Resize housekeeping
+     17. Resize housekeeping
      --------------------------------------------------------------------- */
   let resizeT;
   window.addEventListener("resize", () => {
