@@ -118,11 +118,12 @@
     let loaded = 0;
     const tasks = [];
 
-    // Seul ce qui est visible immédiatement doit être prêt avant d'afficher
-    // la page : le petit logo et la vidéo hero. Le reste (galerie, vidéo de
-    // la section Viennoiserie, etc.) continue de charger tout seul en
-    // arrière-plan — inutile de bloquer l'affichage pour ça.
-    document.querySelectorAll('.hero__mark, .nav__mark, .mobile-menu__logo img, .footer__logo-lockup img').forEach((img) => {
+    // Only what's visible immediately needs to be ready before the page
+    // shows: the small logo marks and the hero video. Everything else
+    // (gallery images, the Viennoiserie video, etc.) keeps loading in the
+    // background — it has plenty of time before the user scrolls that far,
+    // and blocking on it just makes the loading screen drag on for nothing.
+    document.querySelectorAll(".hero__mark, .nav__mark, .mobile-menu__logo img, .footer__logo-lockup img").forEach((img) => {
       if (img.complete && img.naturalWidth > 0) { tasks.push(Promise.resolve()); return; }
       tasks.push(new Promise((res) => {
         img.addEventListener("load", res, { once: true });
@@ -130,9 +131,9 @@
       }));
     });
 
-    // Vidéo hero : on attend juste qu'elle ait de quoi démarrer (loadeddata),
-    // pas qu'elle soit bufferisée à 100% (canplaythrough) — bien plus rapide,
-    // et elle continue de se charger normalement pendant la lecture.
+    // Hero video: wait only until it has a first frame ready (loadeddata),
+    // not until it's buffered start-to-finish (canplaythrough) — much
+    // faster, and it keeps buffering normally once playing.
     if (heroVideo) {
       if (heroVideo.readyState >= 2) {
         tasks.push(Promise.resolve());
@@ -356,11 +357,17 @@
   }
 
   /* ---------------------------------------------------------------------
-     11. VIENNOISERIE — pinned scroll-scrubbed video + captions
+     11. VIENNOISERIE — pinned scroll-scrubbed video + captions (desktop)
+         On mobile, scroll-scrubbing a <video> via currentTime is unreliable
+         across browsers (seek repaints get dropped, buffering stalls stop
+         it rendering at all) — so on small/touch screens the video just
+         plays normally instead, like the hero video, and captions are
+         shown as plain stacked text (see the matching CSS override).
      --------------------------------------------------------------------- */
   const vienSection = document.querySelector(".viennoiserie");
   const caps = gsap.utils.toArray(".viennoiserie__cap");
   const dots = gsap.utils.toArray(".viennoiserie__progress b");
+  const vienUseScrub = !isTouch && window.matchMedia("(min-width: 769px)").matches;
 
   function setCaption(progress) {
     const seg = Math.min(caps.length - 1, Math.floor(progress * caps.length));
@@ -372,32 +379,40 @@
       gsap.set(d, { scaleX: local });
     });
   }
-  gsap.set(caps, { y: 14 });
-  setCaption(0);
 
   if (scrubVideo && vienSection) {
-    let ready = false;
-    const initScrub = () => {
-      if (ready) return;
-      ready = true;
-      ScrollTrigger.create({
-        trigger: vienSection,
-        start: "top top",
-        end: "bottom bottom",
-        scrub: 0.15, // near-direct sync — the video now has a keyframe every 2 frames, so seeking is cheap
-        onUpdate: (self) => {
-          const dur = scrubVideo.duration || 0;
-          if (dur) {
-            try { scrubVideo.currentTime = self.progress * dur; } catch (e) {}
-          }
-          setCaption(self.progress);
-        },
-      });
-    };
-    if (scrubVideo.readyState >= 1) initScrub();
-    else scrubVideo.addEventListener("loadedmetadata", initScrub);
-    // Safety: if metadata never fires (autoplay policies), still allow caption cycling
-    setTimeout(initScrub, 2000);
+    if (vienUseScrub) {
+      gsap.set(caps, { y: 14 });
+      setCaption(0);
+      let ready = false;
+      const initScrub = () => {
+        if (ready) return;
+        ready = true;
+        ScrollTrigger.create({
+          trigger: vienSection,
+          start: "top top",
+          end: "bottom bottom",
+          scrub: 0.5,
+          onUpdate: (self) => {
+            const dur = scrubVideo.duration || 0;
+            if (dur) {
+              try { scrubVideo.currentTime = self.progress * dur; } catch (e) {}
+            }
+            setCaption(self.progress);
+          },
+        });
+      };
+      if (scrubVideo.readyState >= 1) initScrub();
+      else scrubVideo.addEventListener("loadedmetadata", initScrub);
+      // Safety: if metadata never fires (autoplay policies), still allow caption cycling
+      setTimeout(initScrub, 2000);
+    } else {
+      // Mobile/touch fallback: just play the video normally.
+      scrubVideo.loop = true;
+      ensureAutoplay(scrubVideo);
+      gsap.set(caps, { opacity: 1, y: 0 });
+      gsap.set(dots, { scaleX: 1 });
+    }
   }
 
   /* ---------------------------------------------------------------------
