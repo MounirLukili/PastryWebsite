@@ -281,9 +281,6 @@ h3,.h3{
 .illusion{ background:var(--surface); }
 .illusion-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:1.4rem; }
 .illusion-card{ position:relative; }
-.illusion-card:last-child{ grid-column:1 / -1; }
-.illusion-card:last-child .illusion-card__frame{ aspect-ratio:21/8; }
-.illusion-card:last-child .illusion-card__meta{ max-width:640px; margin-inline:auto; text-align:center; }
 .illusion-card__frame{ position:relative; border-radius:var(--radius-m); overflow:hidden; aspect-ratio:3/4; background:var(--porcelain-2); }
 .illusion-card__reveal{ position:absolute; inset:0; clip-path:inset(0 0 100% 0); will-change:clip-path; }
 .illusion-card__reveal img{ width:100%; height:100%; object-fit:cover; transform:scale(1.14); will-change:transform; }
@@ -457,7 +454,6 @@ h3,.h3{
   .scroll-cue{ display:none; }
   .section{ padding:64px 0; }
   .illusion-grid{ grid-template-columns:1fr 1fr; gap:.9rem; }
-  .illusion-card:last-child .illusion-card__frame{ aspect-ratio:16/11; }
   .cookies__float{ display:none; }
   .bq-grid{ grid-template-columns:1fr; }
   .stories__grid{ grid-template-columns:1fr 1fr; }
