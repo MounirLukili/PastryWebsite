@@ -116,35 +116,34 @@
 
   function loadAllAssets() {
     let loaded = 0;
-    const trackables = [];
+    const tasks = [];
 
-    // Every <img> already declared in the document
-    Array.from(document.images).forEach((img) => trackables.push(img));
-
-    const tasks = trackables.map((img) => {
-      if (img.complete && img.naturalWidth > 0) return Promise.resolve();
-      return new Promise((res) => {
+    // Seul ce qui est visible immédiatement doit être prêt avant d'afficher
+    // la page : le petit logo et la vidéo hero. Le reste (galerie, vidéo de
+    // la section Viennoiserie, etc.) continue de charger tout seul en
+    // arrière-plan — inutile de bloquer l'affichage pour ça.
+    document.querySelectorAll('.hero__mark, .nav__mark, .mobile-menu__logo img, .footer__logo-lockup img').forEach((img) => {
+      if (img.complete && img.naturalWidth > 0) { tasks.push(Promise.resolve()); return; }
+      tasks.push(new Promise((res) => {
         img.addEventListener("load", res, { once: true });
         img.addEventListener("error", res, { once: true });
-      });
-    });
-
-    // Both videos — wait until enough is buffered to play through without stalling
-    [heroVideo, scrubVideo].forEach((v) => {
-      if (!v) return;
-      if (v.readyState >= 3) { tasks.push(Promise.resolve()); return; }
-      tasks.push(new Promise((res) => {
-        let done = false;
-        const finish = () => { if (!done) { done = true; res(); } };
-        v.addEventListener("canplaythrough", finish, { once: true });
-        v.addEventListener("error", finish, { once: true });
-        // Some mobile browsers under-report buffering events for short clips —
-        // loadeddata plus a short grace period is a reliable fallback.
-        v.addEventListener("loadeddata", () => setTimeout(finish, 500), { once: true });
       }));
     });
 
-    // Webfonts (avoids a flash of fallback type right after reveal)
+    // Vidéo hero : on attend juste qu'elle ait de quoi démarrer (loadeddata),
+    // pas qu'elle soit bufferisée à 100% (canplaythrough) — bien plus rapide,
+    // et elle continue de se charger normalement pendant la lecture.
+    if (heroVideo) {
+      if (heroVideo.readyState >= 2) {
+        tasks.push(Promise.resolve());
+      } else {
+        tasks.push(new Promise((res) => {
+          heroVideo.addEventListener("loadeddata", res, { once: true });
+          heroVideo.addEventListener("error", res, { once: true });
+        }));
+      }
+    }
+
     if (document.fonts && document.fonts.ready) {
       tasks.push(document.fonts.ready.catch(() => {}));
     }
@@ -181,7 +180,7 @@
   // connection still gets to finish loading for real (which is the point),
   // short enough that a single stuck asset can't hang the page forever.
   const loadPromise = loadAllAssets();
-  const timeoutPromise = new Promise((res) => setTimeout(res, 45000));
+  const timeoutPromise = new Promise((res) => setTimeout(res, 8000));
   Promise.race([loadPromise, timeoutPromise]).then(() => {
     updateProgress(1, 1);
     setTimeout(revealSite, 220);
