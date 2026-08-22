@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>El Faleh Pastry — Pâtisserie & Vienoiserie, Tétouan</title>
+<meta name="description" content="El Faleh Pastry — pâtisserie artisanale à Tétouan. Créations trompe-l'œil, viennoiserie, cookies gourmets et entremets sur mesure par le Chef Hamza El Faleh.">
+<meta property="og:title" content="El Faleh Pastry — L'illusion sucrée">
+<meta property="og:description" content="Pâtisserie artisanale à Tétouan. Créations trompe-l'œil, viennoiserie et entremets par le Chef Hamza El Faleh.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="assets/img/poster-trompe.jpg">
+<meta name="theme-color" content="#1B1512">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="assets/img/favicon-16.png">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="512x512" href="assets/img/favicon-512.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<!-- ============ PRELOADER ============ -->
+<div class="preloader" id="preloader" aria-hidden="true">
+  <img src="assets/img/logo-white.png" alt="">
+  <div class="preloader__bar"><i id="preloaderBar"></i></div>
+  <div class="preloader__label">L'illusion se prépare</div>
+</div>
+
+<!-- ============ CURSOR ============ -->
+<div class="cursor-dot" id="cursorDot"></div>
+
+<!-- ============ NAV ============ -->
+<header class="nav" id="siteNav">
+  <div class="nav__inner">
+    <a href="#hero" class="nav__logo"><img src="assets/img/logo-white.png" alt="El Faleh Pastry"></a>
+    <nav class="nav__links">
+      <a href="#illusion">Créations</a>
+      <a href="#menu">Menu</a>
+      <a href="#atelier">L'Atelier</a>
+      <a href="#boutiques">Boutiques</a>
+    </nav>
+    <div class="nav__right">
+      <a class="btn btn-outline" href="https://wa.me/212670173277" target="_blank" rel="noopener">Commander</a>
+      <button class="nav__burger" id="burgerBtn" aria-label="Ouvrir le menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#illusion" class="mobile-link">Créations</a>
+  <a href="#menu" class="mobile-link">Menu</a>
+  <a href="#atelier" class="mobile-link">L'Atelier</a>
+  <a href="#boutiques" class="mobile-link">Boutiques</a>
+  <div class="mobile-menu__foot">
+    <a href="https://instagram.com/elfaleh_pastry" target="_blank" rel="noopener">Instagram</a>
+    <a href="https://wa.me/212670173277" target="_blank" rel="noopener">WhatsApp</a>
+  </div>
+</div>
+
+<main id="top">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero" id="hero">
+    <div class="hero__media" id="heroMedia">
+      <video autoplay muted loop playsinline poster="assets/img/poster-trompe.jpg" id="heroVideo">
+        <source src="assets/video/hero-trompe.mp4" type="video/mp4">
+      </video>
+    </div>
+    <div class="hero__scrim"></div>
+    <div class="hero__content">
+      <div class="wrap">
+        <p class="hero__kicker script" data-fade>Chef Hamza El Faleh présente</p>
+        <h1 aria-label="L'illusion sucrée.">
+          <span class="mask-line"><span data-hero-word>L'illusion</span></span>
+          <span class="mask-line"><span data-hero-word><em>sucrée.</em></span></span>
+        </h1>
+        <div class="hero__row">
+          <p class="hero__sub" data-fade>Depuis Tétouan, une pâtisserie qui trompe l'œil avant de conquérir le palais.</p>
+          <div class="hero__ctas" data-fade>
+            <a href="#illusion" class="btn btn-primary">Découvrir nos créations</a>
+            <a href="https://wa.me/212670173277" target="_blank" rel="noopener" class="btn btn-outline on-dark">Commander</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="scroll-cue"><span>Défiler</span><i></i></div>
+  </section>
+
+  <!-- ============ MARQUEE ============ -->
+  <div class="marquee">
+    <div class="marquee__track" id="marqueeTrack">
+      <span>TROMPE-L'ŒIL <i></i> VIENNOISERIE <i></i> COOKIES GOURMETS <i></i> CHOCOLAT <i></i> ENTREMETS SUR MESURE <i></i> FAIT MAIN À TÉTOUAN <i></i></span>
+      <span aria-hidden="true">TROMPE-L'ŒIL <i></i> VIENNOISERIE <i></i> COOKIES GOURMETS <i></i> CHOCOLAT <i></i> ENTREMETS SUR MESURE <i></i> FAIT MAIN À TÉTOUAN <i></i></span>
+    </div>
+  </div>
+
+  <!-- ============ MANIFESTO ============ -->
+  <section class="section manifesto" id="manifesto">
+    <div class="wrap">
+      <div class="manifesto__grid">
+        <div class="manifesto__text">
+          <p class="eyebrow" data-reveal>Notre philosophie</p>
+          <p class="h2">
+            <span class="mask-line"><span>Chez El Faleh, chaque création</span></span>
+            <span class="mask-line"><span>commence par un regard — celui</span></span>
+            <span class="mask-line"><span>d'un fruit, d'un grain de café,</span></span>
+            <span class="mask-line"><span>d'une feuille de menthe. Puis vient</span></span>
+            <span class="mask-line"><span>la main du chef, qui sculpte, glace</span></span>
+            <span class="mask-line"><span>et façonne — jusqu'à tromper l'œil,</span></span>
+            <span class="mask-line"><span>avant de surprendre le palais.</span></span>
+          </p>
+          <p class="manifesto__sign" data-reveal>Hamza El Faleh</p>
+          <div class="manifesto__facts" data-reveal>
+            <div>100% Artisanal</div>
+            <div>Façonné chaque matin</div>
+            <div>Deux ateliers à Tétouan</div>
+          </div>
+        </div>
+        <div class="manifesto__img" data-reveal>
+          <img src="assets/img/cookie-raspberry-hero.jpg" loading="lazy" alt="Cookie gourmet framboise et pistache, El Faleh Pastry">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ILLUSION GALLERY (signature) ============ -->
+  <section class="section illusion" id="illusion">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Trompe-l'œil</p>
+          <h2>On dirait… <em style="font-style:italic;color:var(--ink-faint)">c'est en fait.</em></h2>
+        </div>
+        <p class="lede">Quatre créations pensées pour tromper l'œil avant de surprendre le palais — la signature du Chef Hamza El Faleh.</p>
+      </div>
+
+      <div class="illusion-grid">
+        <article class="illusion-card" data-illusion>
+          <div class="illusion-card__frame">
+            <div class="illusion-card__curtain"></div>
+            <div class="illusion-card__reveal"><img src="assets/img/trompe-dome.jpg" loading="lazy" alt="Pâtisserie en forme de galet, El Faleh Pastry"></div>
+            <span class="illusion-card__num">01</span>
+          </div>
+          <div class="illusion-card__meta">
+            <p class="illusion-card__tag">On dirait</p>
+            <p class="illusion-card__name">Un galet, veiné d'or</p>
+            <p class="illusion-card__tag illusion-card__tag--truth">C'est en fait</p>
+            <p class="illusion-card__truth">Mousse chocolat noir, croustillant praliné, feuille d'or</p>
+          </div>
+        </article>
+
+        <article class="illusion-card" data-illusion>
+          <div class="illusion-card__frame">
+            <div class="illusion-card__curtain"></div>
+            <div class="illusion-card__reveal"><img src="assets/img/trompe-kiwi.jpg" loading="lazy" alt="Pâtisserie en forme de kiwi, El Faleh Pastry"></div>
+            <span class="illusion-card__num">02</span>
+          </div>
+          <div class="illusion-card__meta">
+            <p class="illusion-card__tag">On dirait</p>
+            <p class="illusion-card__name">Un kiwi, tout juste tranché</p>
+            <p class="illusion-card__tag illusion-card__tag--truth">C'est en fait</p>
+            <p class="illusion-card__truth">Bavaroise pistache, cœur citron vert, biscuit amande</p>
+          </div>
+        </article>
+
+        <article class="illusion-card" data-illusion>
+          <div class="illusion-card__frame">
+            <div class="illusion-card__curtain"></div>
+            <div class="illusion-card__reveal"><img src="assets/img/trompe-coffee.jpg" loading="lazy" alt="Pâtisserie en forme de grain de café, El Faleh Pastry"></div>
+            <span class="illusion-card__num">03</span>
+          </div>
+          <div class="illusion-card__meta">
+            <p class="illusion-card__tag">On dirait</p>
+            <p class="illusion-card__name">Un grain de café</p>
+            <p class="illusion-card__tag illusion-card__tag--truth">C'est en fait</p>
+            <p class="illusion-card__truth">Ganache café-cacao, croustillant noisette</p>
+          </div>
+        </article>
+
+        <article class="illusion-card" data-illusion>
+          <div class="illusion-card__frame">
+            <div class="illusion-card__curtain"></div>
+            <div class="illusion-card__reveal"><img src="assets/img/trompe-aubergine.jpg" loading="lazy" alt="Pâtisserie en forme d'aubergine, El Faleh Pastry"></div>
+            <span class="illusion-card__num">04</span>
+          </div>
+          <div class="illusion-card__meta">
+            <p class="illusion-card__tag">On dirait</p>
+            <p class="illusion-card__name">Une aubergine</p>
+            <p class="illusion-card__tag illusion-card__tag--truth">C'est en fait</p>
+            <p class="illusion-card__truth">Mousse cassis-pistache, biscuit amande</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ COOKIES ============ -->
+  <section class="section cookies" id="cookies">
+    <div class="wrap">
+      <div class="cookies__grid">
+        <div class="cookies__copy">
+          <p class="eyebrow" data-reveal>Cookies Gourmets</p>
+          <h2 data-reveal>Épais. Croustillant.<br>Généreux.</h2>
+          <p class="lede" data-reveal>Un cœur fondant, une croûte craquante, et des garnitures qui ne font pas les choses à moitié : framboise fraîche et pistache concassée, biscuits brisés, caramel et chocolat.</p>
+          <div class="cookies__tags" data-reveal>
+            <span>Framboise · Pistache</span>
+            <span>Oreo</span>
+            <span>Biscoff</span>
+            <span>Chocolat Blanc</span>
+          </div>
+        </div>
+        <div class="cookies__visual" data-reveal>
+          <div class="cookies__main"><img src="assets/img/cookies-grid.jpg" loading="lazy" alt="Assortiment de cookies gourmets, El Faleh Pastry"></div>
+          <div class="cookies__float"><img src="assets/img/trompe-row.jpg" loading="lazy" alt="Créations trompe-l'œil El Faleh Pastry"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ VIENNOISERIE — video scrub ============ -->
+  <section class="viennoiserie" id="viennoiserie">
+    <div class="viennoiserie__pin">
+      <video class="viennoiserie__video" id="scrubVideo" muted playsinline preload="auto" poster="assets/img/poster-croissant.jpg">
+        <source src="assets/video/hero-croissant.mp4" type="video/mp4">
+      </video>
+      <div class="viennoiserie__scrim"></div>
+      <div class="viennoiserie__content">
+        <p class="eyebrow on-dark viennoiserie__eyebrow">Viennoiserie</p>
+        <div class="viennoiserie__captions">
+          <p class="viennoiserie__cap" data-cap="0"><span class="h1">Chaque pli.</span></p>
+          <p class="viennoiserie__cap" data-cap="1"><span class="h1">Chaque couche.</span></p>
+          <p class="viennoiserie__cap" data-cap="2"><span class="h1">Façonné à la main,<br>chaque matin.</span></p>
+        </div>
+      </div>
+      <div class="viennoiserie__progress"><i><b></b></i><i><b></b></i><i><b></b></i></div>
+    </div>
+  </section>
+
+  <!-- ============ VIENNOISERIE GALLERY ============ -->
+  <section class="section vien-gallery">
+    <div class="wrap">
+      <div class="vien-gallery__grid">
+        <div class="vien-gallery__main" data-reveal>
+          <img src="assets/img/viennoiserie-plates.jpg" loading="lazy" alt="Assortiment de viennoiserie sur plateaux dorés, El Faleh Pastry">
+        </div>
+        <div class="vien-gallery__side" data-reveal>
+          <img src="assets/img/croissant-hand.jpg" loading="lazy" alt="Pain au chocolat feuilleté, El Faleh Pastry">
+          <p class="vien-gallery__cap">Croissant pur beurre, pain au chocolat — et jusque dans la viennoiserie, ce même souci du détail.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PATISSERIE / ENTREMETS — sticky crossfade ============ -->
+  <section class="section patisserie" id="patisserie">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Gâteaux & Entremets</p>
+          <h2>Des classiques,<br>revisités.</h2>
+        </div>
+      </div>
+      <div class="pat__grid">
+        <div class="pat__visual" id="patVisual">
+          <img class="is-active" src="assets/img/cheesecake-clean.jpg" data-pat="0" alt="Cheesecake au citron, El Faleh Pastry">
+          <img src="assets/img/damier-clean.jpg" data-pat="1" alt="Cake damier, El Faleh Pastry">
+        </div>
+        <div class="pat__list">
+          <div class="pat__item" data-pat-trigger="0">
+            <p class="eyebrow">01 — Signature</p>
+            <h3>Cheesecake au Citron</h3>
+            <p class="lede">Un cœur crémeux, un glaçage citron acidulé et une meringue légèrement brûlée. L'équilibre parfait entre douceur et fraîcheur.</p>
+            <p class="pat__item__price">Sur commande, en entremets individuels ou grand format</p>
+          </div>
+          <div class="pat__item" data-pat-trigger="1">
+            <p class="eyebrow">02 — Best-seller</p>
+            <h3>Cake Damier</h3>
+            <p class="lede">Un échiquier de biscuit chocolat et vanille, enrobé de ganache et d'éclats de noisette torréfiée. Précision visuelle, gourmandise assumée.</p>
+            <p class="pat__item__price">Disponible en pièce individuelle ou pièce à partager</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ATELIER (dark) ============ -->
+  <section class="section atelier" id="atelier">
+    <div class="atelier__bg" id="atelierBg"><img src="assets/img/atelier-aubergine.jpg" loading="lazy" alt="Intérieur de l'atelier El Faleh Pastry"></div>
+    <div class="atelier__inner wrap">
+      <div class="atelier__grid">
+        <div>
+          <p class="eyebrow on-dark" data-reveal>L'Atelier</p>
+          <h2 data-reveal>Deux adresses,<br>un seul geste.</h2>
+          <p class="lede" data-reveal>Entre les murs blancs de l'atelier, chaque outil a sa place et chaque geste est répété jusqu'à la précision. Le Chef Hamza El Faleh y façonne, jour après jour, une pâtisserie exigeante — sans jamais perdre sa signature : l'illusion parfaite.</p>
+          <p class="atelier__sign" data-reveal>— Chef Hamza El Faleh</p>
+        </div>
+        <div class="atelier__stats" data-reveal>
+          <div class="atelier__stat"><b>2019</b><span>Année de création</span></div>
+          <div class="atelier__stat"><b>2</b><span>Ateliers à Tétouan</span></div>
+          <div class="atelier__stat"><b>44K+</b><span>Communauté Instagram</span></div>
+          <div class="atelier__stat"><b>100%</b><span>Fait main, sans détour</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ MENU ============ -->
+  <section class="section menu-sec" id="menu">
+    <div class="wrap">
+      <div class="menu-sec__head">
+        <p class="eyebrow" style="justify-content:center">La Carte</p>
+        <h2>Feuilletez notre carte</h2>
+        <p class="lede">Cookies, viennoiserie, entremets et chocolats — la carte complète, mise à jour, à portée de doigt.</p>
+        <div class="menu-sec__actions">
+          <a class="btn btn-outline" href="https://heyzine.com/flip-book/f1f8929fad.html" target="_blank" rel="noopener">Ouvrir en plein écran</a>
+        </div>
+      </div>
+      <div class="menu-frame" data-reveal>
+        <div class="menu-frame__bar"><i></i><i></i><i></i></div>
+        <div class="menu-frame__loading" id="menuLoading">Chargement de la carte…</div>
+        <iframe src="https://heyzine.com/flip-book/f1f8929fad.html" loading="lazy" title="Carte El Faleh Pastry" id="menuIframe" allowfullscreen></iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SOCIAL / STORIES ============ -->
+  <section class="section stories" id="stories">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Suivez l'atelier</p>
+          <h2>En cuisine,<br>chaque jour.</h2>
+        </div>
+        <p class="lede">Nos dernières créations, en coulisses, sur Instagram et TikTok.</p>
+      </div>
+      <div class="stories__grid">
+        <a class="story-card" data-reveal href="https://instagram.com/elfaleh_pastry" target="_blank" rel="noopener">
+          <img src="assets/img/story-croissant.jpg" loading="lazy" alt="Croissants El Faleh Pastry — story Instagram">
+          <span class="story-card__ring"><img src="assets/img/logo.jpg" alt=""></span>
+          <span class="story-card__play"><svg viewBox="0 0 24 24" fill="none"><path d="M6 4l14 8-14 8V4z" fill="#1B1512"/></svg></span>
+        </a>
+        <a class="story-card" data-reveal href="https://instagram.com/elfaleh_pastry" target="_blank" rel="noopener">
+          <img src="assets/img/story-cheesecake.jpg" loading="lazy" alt="Cheesecake au citron El Faleh Pastry — story Instagram">
+          <span class="story-card__ring"><img src="assets/img/logo.jpg" alt=""></span>
+          <span class="story-card__play"><svg viewBox="0 0 24 24" fill="none"><path d="M6 4l14 8-14 8V4z" fill="#1B1512"/></svg></span>
+        </a>
+        <a class="story-card" data-reveal href="https://instagram.com/elfaleh_pastry" target="_blank" rel="noopener">
+          <img src="assets/img/story-damier.jpg" loading="lazy" alt="Cake damier El Faleh Pastry — story Instagram">
+          <span class="story-card__ring"><img src="assets/img/logo.jpg" alt=""></span>
+          <span class="story-card__play"><svg viewBox="0 0 24 24" fill="none"><path d="M6 4l14 8-14 8V4z" fill="#1B1512"/></svg></span>
+        </a>
+      </div>
+      <div class="stories__foot">
+        <a class="btn-ghost" href="https://instagram.com/elfaleh_pastry" target="_blank" rel="noopener">@elfaleh_pastry sur Instagram</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ BOUTIQUES ============ -->
+  <section class="section boutiques" id="boutiques">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Nous rendre visite</p>
+          <h2>Deux ateliers à Tétouan</h2>
+        </div>
+        <p class="lede">Passez commande, ou venez simplement observer les créations prendre forme derrière la vitrine.</p>
+      </div>
+      <div class="bq-grid">
+        <div class="bq-card" data-reveal>
+          <p class="bq-card__tag">Boutique 01</p>
+          <h3>El Faleh Pastry<br>Pâtisserie & Vienoiserie</h3>
+          <p class="bq-card__addr">Av. Mohamed El Harrak, Tétouan 93000</p>
+          <div class="bq-card__row">
+            <div>Téléphone<b>+212 670 17 32 77</b></div>
+            <div>Horaires<b>Voir sur Google Maps</b></div>
+          </div>
+          <div class="bq-card__ctas">
+            <a class="btn btn-outline" href="https://maps.app.goo.gl/Wj8JJj3uab3yCgi36" target="_blank" rel="noopener">Itinéraire</a>
+            <a class="btn-ghost" href="https://wa.me/212670173277" target="_blank" rel="noopener">WhatsApp</a>
+          </div>
+          <img class="bq-card__mark" src="assets/img/logo-mark.png" alt="">
+        </div>
+        <div class="bq-card" data-reveal>
+          <p class="bq-card__tag">Boutique 02</p>
+          <h3>El Faleh Pastry<br>Atelier River</h3>
+          <p class="bq-card__addr">Tétouan River Residence, Tétouan</p>
+          <div class="bq-card__row">
+            <div>Téléphone<b>+212 765 55 78 01</b></div>
+            <div>Horaires<b>Voir sur Google Maps</b></div>
+          </div>
+          <div class="bq-card__ctas">
+            <a class="btn btn-outline" href="https://maps.app.goo.gl/vZcnNYYg9PjxM7xa8" target="_blank" rel="noopener">Itinéraire</a>
+            <a class="btn-ghost" href="https://wa.me/212765557801" target="_blank" rel="noopener">WhatsApp</a>
+          </div>
+          <img class="bq-card__mark" src="assets/img/logo-mark.png" alt="">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA BAND ============ -->
+  <section class="section cta-band">
+    <div class="wrap-narrow">
+      <p class="eyebrow on-dark" style="justify-content:center">À emporter, ou sur place</p>
+      <h2>Une envie sucrée ?</h2>
+      <p class="lede">Commandez directement sur WhatsApp, ou passez nous voir à l'atelier.</p>
+      <div class="cta-band__ctas">
+        <a class="btn btn-primary" style="background:var(--porcelain);color:var(--ink)" href="https://wa.me/212670173277" target="_blank" rel="noopener">Commander sur WhatsApp</a>
+        <a class="btn btn-outline on-dark" href="#boutiques">Voir les boutiques</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer__top">
+      <div class="footer__logo">
+        <img src="assets/img/logo.jpg" alt="El Faleh Pastry" style="mix-blend-mode:multiply">
+        <p class="footer__about">Pâtisserie artisanale à Tétouan. Trompe-l'œil, viennoiserie, cookies gourmets et entremets faits main par le Chef Hamza El Faleh.</p>
+      </div>
+      <div>
+        <h4>Explorer</h4>
+        <ul>
+          <li><a href="#illusion">Créations</a></li>
+          <li><a href="#menu">Menu</a></li>
+          <li><a href="#atelier">L'Atelier</a></li>
+          <li><a href="#boutiques">Boutiques</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Boutiques</h4>
+        <ul>
+          <li><a href="https://maps.app.goo.gl/Wj8JJj3uab3yCgi36" target="_blank" rel="noopener">Pâtisserie & Vienoiserie</a></li>
+          <li><a href="https://maps.app.goo.gl/vZcnNYYg9PjxM7xa8" target="_blank" rel="noopener">Atelier River</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="tel:+212670173277">+212 670 17 32 77</a></li>
+          <li><a href="mailto:elfalehpastry@gmail.com">elfalehpastry@gmail.com</a></li>
+          <li><a href="https://instagram.com/elfaleh_pastry" target="_blank" rel="noopener">Instagram</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span>© 2026 El Faleh Pastry. Tous droits réservés.</span>
+      <div class="footer__social">
+        <a href="https://instagram.com/elfaleh_pastry" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://www.tiktok.com/@elfalehpastry" target="_blank" rel="noopener">TikTok</a>
+        <a href="https://wa.me/212670173277" target="_blank" rel="noopener">WhatsApp</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1/dist/lenis.min.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>
