@@ -392,7 +392,7 @@
           trigger: vienSection,
           start: "top top",
           end: "bottom bottom",
-          scrub: 0.5,
+          scrub: true, // direct 1:1 with scroll position — Lenis already smooths the scroll itself, so adding scrub-smoothing on top just made the video lag behind where you'd actually scrolled
           onUpdate: (self) => {
             const dur = scrubVideo.duration || 0;
             if (dur) {
